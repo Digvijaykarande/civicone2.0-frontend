@@ -1,0 +1,79 @@
+import React, { useState } from "react";
+import "../stylesheets/LoginPage.css";
+
+const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("https://civicone2-0.onrender.com/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Save JWT token in localStorage
+        localStorage.setItem("token", data.token);
+        alert("Login successful!");
+        // Redirect or navigate to dashboard
+        window.location.href = "/"; 
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Login failed!");
+    }
+  };
+
+  return (
+    <>
+    <div className="signin-box">
+      <div className="logo-circle">C</div>
+      <h2 className="signin-title">SignIn</h2>
+
+      <input
+        type="email"
+        placeholder="user@example.com"
+        className="input-field"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        className="input-field"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button className="signin-btn" onClick={handleLogin}>
+        Sign in
+      </button>
+
+      <div className="divider"><span>or</span></div>
+
+      <button className="google-btn">
+        <img
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+          alt="Google"
+        />
+        <span>Sign in with Google</span>
+      </button>
+
+      <p className="footer-text">
+        Don’t have an account? <a href="register">register</a>
+      </p>
+    </div>
+    </>
+  );
+};
+
+export default LoginPage;

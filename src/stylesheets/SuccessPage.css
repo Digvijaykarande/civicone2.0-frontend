@@ -1,0 +1,132 @@
+/* Page layout */
+.success-wrapper {
+  min-height: 100vh;
+  padding: 24px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: pageFade 0.6s ease-in;
+}
+
+/* Circle animation */
+.success-circle {
+  width: 160px;
+  height: 160px;
+  background: #e6fff1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.8s ease-out;
+}
+
+/* Checkmark */
+.checkmark {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 6px solid #00c853;
+  color: #00c853;
+  font-size: 36px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: drawCheck 0.6s ease forwards;
+}
+
+/* Text */
+.success-title {
+  margin-top: 32px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0a2540;
+}
+
+.success-text {
+  margin-top: 12px;
+  font-size: 15px;
+  color: #6b7c93;
+  max-width: 320px;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  max-width: 340px;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.primary-btn {
+  background: #00a8f3;
+  color: white;
+  box-shadow: 0 10px 20px rgba(0, 168, 243, 0.25);
+}
+
+.secondary-btn {
+  background: #ffffff;
+  color: #344563;
+  border: 1px solid #dfe3eb;
+}
+
+/* Animations */
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes drawCheck {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .success-title {
+    font-size: 26px;
+  }
+  .success-text {
+    font-size: 16px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .success-circle {
+    width: 180px;
+    height: 180px;
+  }
+}

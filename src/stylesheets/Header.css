@@ -1,0 +1,18 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 25px 10px;
+  justify-content: flex-start;
+}
+
+.menu-icon {
+  cursor: pointer;
+  color: #2563eb;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 750;
+  color: #1660ff;
+}
