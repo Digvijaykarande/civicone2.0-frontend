@@ -7,14 +7,17 @@ const FeedPage = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch reports from backend
+  const [commentText, setCommentText] = useState({});
+  const [commentsData, setCommentsData] = useState({});
+
+  /* =========================
+     Fetch Reports
+  ========================= */
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const res = await fetch("https://civicone2-0.onrender.com/api/reports");
         const data = await res.json();
-
-        // Your API returns { total, page, limit, reports }
         setReports(data.reports || []);
       } catch (err) {
         console.error("Failed to fetch reports:", err);
@@ -25,20 +28,53 @@ const FeedPage = () => {
     fetchReports();
   }, []);
 
+  /* =========================
+     Add Comment
+  ========================= */
+  const handleAddComment = async (reportId) => {
+    const text = commentText[reportId];
+    if (!text || text.trim() === "") return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        `https://civicone2-0.onrender.com/api/reports/${reportId}/comment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ text })
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setCommentsData((prev) => ({ ...prev, [reportId]: data }));
+        setCommentText((prev) => ({ ...prev, [reportId]: "" }));
+      } else {
+        alert(data.message || "Failed to comment");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error posting comment");
+    }
+  };
+
   return (
     <div className="feed-container">
 
       {/* Header */}
       <div className="feed-header">
-        <span>
-          <Link to="/" style={{ textDecoration: "none", color: "black" }}>
-            <ArrowLeft />
-          </Link>
-        </span>
+        <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+          <ArrowLeft />
+        </Link>
         <h1>CivicOne Feed</h1>
       </div>
 
-      {/* Loading */}
       {loading && <p style={{ textAlign: "center" }}>Loading reports...</p>}
 
       {/* Feed List */}
@@ -46,7 +82,7 @@ const FeedPage = () => {
         {reports.map((report) => (
           <div key={report._id} className="feed-card">
 
-            {/* User Info */}
+            {/* User */}
             <div className="user-info">
               <img
                 src={`https://ui-avatars.com/api/?name=${report.reporter?.name || "User"}`}
@@ -69,20 +105,46 @@ const FeedPage = () => {
 
             {/* Image */}
             {report.imagePath && (
-              <img
-                src={report.imagePath}
-                alt="Issue"
-                className="issue-image"
-              />
+              <img src={report.imagePath} alt="Issue" className="issue-image" />
             )}
 
             {/* Description */}
             <p className="description">{report.description}</p>
 
-            {/* Status (optional) */}
+            {/* Status */}
             <p className="status">
               Status: <strong>{report.status}</strong>
             </p>
+
+            {/* ================= COMMENTS ================= */}
+            <div className="comments-section">
+
+              {/* Show comments */}
+              {(commentsData[report._id] || report.comments || []).map((c, i) => (
+                <div key={i} className="comment">
+                  <strong>{c.user?.name || "User"}:</strong> {c.text}
+                </div>
+              ))}
+
+              {/* Add comment */}
+              <div className="comment-input">
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={commentText[report._id] || ""}
+                  onChange={(e) =>
+                    setCommentText((prev) => ({
+                      ...prev,
+                      [report._id]: e.target.value
+                    }))
+                  }
+                />
+                <button onClick={() => handleAddComment(report._id)}>
+                  Post
+                </button>
+              </div>
+
+            </div>
 
           </div>
         ))}
